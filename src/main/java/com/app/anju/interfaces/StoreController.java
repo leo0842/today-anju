@@ -1,8 +1,8 @@
 package com.app.anju.interfaces;
 
-import com.app.anju.domain.StoreDto;
 import com.app.anju.applications.StoreService;
 import com.app.anju.domain.Store;
+import com.app.anju.domain.StoreDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
