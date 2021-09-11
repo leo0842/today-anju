@@ -1,7 +1,5 @@
 package com.app.anju.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,8 +23,6 @@ public class Store {
 
   private double latitude;
 
-  private List<Food> menus;
-
   private Integer point;
 
   private boolean visited;
@@ -35,8 +31,4 @@ public class Store {
 
   private String address;
 
-  public void addMenu(Food food) {
-
-    this.menus.add(food);
-  }
 }

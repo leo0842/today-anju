@@ -1,9 +1,7 @@
 package com.app.anju.applications;
 
-import com.app.anju.domain.Food;
-import com.app.anju.domain.StoreDto;
 import com.app.anju.domain.Store;
-import java.util.ArrayList;
+import com.app.anju.domain.StoreDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -21,7 +19,6 @@ public class StoreService {
         .name(storeDto.getName())
         .longitude(storeDto.getLongitude())
         .latitude(storeDto.getLatitude())
-        .menus(storeDto.getMenu())
         .point(storeDto.getPoint())
         .visited(storeDto.isVisited())
         .build();
