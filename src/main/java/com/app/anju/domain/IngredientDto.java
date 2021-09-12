@@ -11,12 +11,12 @@ public class IngredientDto {
 
   private Long id;
 
-  private String ingredientName;
+  private String name;
 
   public IngredientDto(Ingredient ingredient) {
 
     this.id = ingredient.getId();
-    this.ingredientName = ingredient.getIngredientName();
+    this.name = ingredient.getName();
   }
 
 }

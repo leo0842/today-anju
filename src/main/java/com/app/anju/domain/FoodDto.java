@@ -13,7 +13,7 @@ public class FoodDto {
 
   private Long id;
 
-  private String foodName;
+  private String name;
 
   private Base base;
 
@@ -27,7 +27,7 @@ public class FoodDto {
 
   public FoodDto(Food food) {
     this.id = food.getId();
-    foodName = food.getFoodName();
+    name = food.getName();
     base = food.getBase();
     method = food.getMethod();
     characteristic = food.getCharacteristic();
