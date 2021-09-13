@@ -19,4 +19,9 @@ public class IngredientDto {
     this.name = ingredient.getName();
   }
 
+  public IngredientDto(IngredientDetail ingredientDetail) {
+
+    this.id = ingredientDetail.getId();
+    this.name = ingredientDetail.getIngredient().getName();
+  }
 }
