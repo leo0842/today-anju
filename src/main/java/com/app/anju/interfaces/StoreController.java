@@ -1,8 +1,7 @@
 package com.app.anju.interfaces;
 
 import com.app.anju.applications.StoreService;
-import com.app.anju.domain.Store;
-import com.app.anju.domain.StoreDto;
+import com.app.anju.domain.StoresDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,14 +20,14 @@ public class StoreController {
   @PostMapping("/store")
   @ResponseStatus(HttpStatus.CREATED)
   public void insertData(
-      @RequestBody StoreDto storeDto
+      @RequestBody StoresDto storesDto
   ) {
 
-    storeService.insertStore(storeDto);
+    storeService.insertStore(storesDto);
   }
 
   @GetMapping("/stores")
-  public List<Store> getStores() {
+  public List<StoresDto> getStores() {
 
     return storeService.getStores();
   }
