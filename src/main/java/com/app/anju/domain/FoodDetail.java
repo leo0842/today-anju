@@ -24,7 +24,7 @@ public class FoodDetail {
   @ManyToOne
   private Food food;
 
-  private Long storeId;
+  private String storeId;
 
   private String description;
 
