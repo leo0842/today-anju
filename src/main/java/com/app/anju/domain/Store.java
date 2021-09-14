@@ -1,5 +1,6 @@
 package com.app.anju.domain;
 
+import com.app.anju.domain.embed.Location;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,9 +20,7 @@ public class Store {
 
   private String name;
 
-  private double longitude;
-
-  private double latitude;
+  private Location location;
 
   private Integer point;
 

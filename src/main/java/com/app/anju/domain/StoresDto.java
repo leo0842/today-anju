@@ -1,6 +1,8 @@
 package com.app.anju.domain;
 
+import com.app.anju.domain.embed.Location;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -30,8 +32,6 @@ public class StoresDto {
 
     this.id = store.get_id();
     this.name = store.getName();
-    this.longitude = store.getLongitude();
-    this.latitude = store.getLatitude();
     this.point = store.getPoint();
     this.visited = store.isVisited();
   }
@@ -40,8 +40,8 @@ public class StoresDto {
 
     this.id = store.get_id();
     this.name = store.getName();
-    this.longitude = store.getLongitude();
-    this.latitude = store.getLatitude();
+    this.longitude = store.getLocation().getCoordinates().get(0);
+    this.latitude = store.getLocation().getCoordinates().get(1);
     this.point = store.getPoint();
     this.visited = store.isVisited();
     this.menus = toFoodDto(foods);
@@ -51,8 +51,7 @@ public class StoresDto {
 
     return Store.builder()
         .name(this.name)
-        .longitude(this.longitude)
-        .latitude(this.latitude)
+        .location(Location.builder().coordinates(Arrays.asList(this.longitude, this.latitude)).type("Point").build())
         .point(this.point)
         .visited(this.visited)
         .build();
