@@ -2,12 +2,10 @@ package com.app.anju.domain.querydsl;
 
 import com.app.anju.domain.Base;
 import com.app.anju.domain.FilterDto;
-import com.app.anju.domain.Food;
 import com.app.anju.domain.FoodDetail;
 import com.app.anju.domain.Method;
 import com.app.anju.domain.QFood;
 import com.app.anju.domain.QFoodDetail;
-import com.app.anju.domain.QIngredient;
 import com.app.anju.domain.QIngredientDetail;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -37,6 +35,7 @@ public class QueryFoodRepository {
         .where(eqBase(food, filterDto.getBase()))
         .where(eqMethod(food, filterDto.getMethod()))
         .where(eqIngredient(ingredientDetail, filterDto.getIngredientName()))
+        .where(includeFoodName(food, filterDto.getFoodName()))
         .fetch();
   }
 
@@ -73,5 +72,15 @@ public class QueryFoodRepository {
     }
 
     return ingredientDetail.ingredient.name.eq(ingredientName);
+  }
+
+  private Predicate includeFoodName(QFood food, String foodName) {
+
+    if (foodName == null) {
+
+      return null;
+    }
+
+    return food.name.contains(foodName);
   }
 }
