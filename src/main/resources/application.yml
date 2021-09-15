@@ -6,11 +6,11 @@ spring:
     database: mysql
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     open-in-view: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST}:3306/anju
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/anju
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
 
