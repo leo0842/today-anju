@@ -13,5 +13,5 @@ public enum Method {
   SOUP("탕"),
   STIR("볶음");
 
-  private String methodName;
+  private String methodValue;
 }

@@ -12,6 +12,6 @@ public enum Base {
   SOY_SOURCE("간장"),
   RED_PEPPER_SOURCE("고추장");
 
-  private String baseName;
+  private String baseValue;
 
 }
