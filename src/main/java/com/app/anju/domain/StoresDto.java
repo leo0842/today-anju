@@ -28,12 +28,15 @@ public class StoresDto {
 
   private boolean visited;
 
+  private String address;
+
   public StoresDto(Store store) {
 
     this.id = store.get_id();
     this.name = store.getName();
     this.point = store.getPoint();
     this.visited = store.isVisited();
+    this.address = store.getAddress();
   }
 
   public StoresDto(Store store, List<Food> foods) {
@@ -45,6 +48,7 @@ public class StoresDto {
     this.point = store.getPoint();
     this.visited = store.isVisited();
     this.menus = toFoodDto(foods);
+    this.address = store.getAddress();
   }
 
   public Store toStore() {
@@ -54,6 +58,7 @@ public class StoresDto {
         .location(Location.builder().coordinates(Arrays.asList(this.longitude, this.latitude)).type("Point").build())
         .point(this.point)
         .visited(this.visited)
+        .address(this.address)
         .build();
   }
 
