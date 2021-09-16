@@ -27,7 +27,7 @@ public class QueryFoodRepository {
     QIngredientDetail ingredientDetail = QIngredientDetail.ingredientDetail;
 
     return query
-        .select(foodDetail)
+        .selectDistinct(foodDetail)
         .from(foodDetail)
         .leftJoin(foodDetail.food, food)
         .leftJoin(food.ingredientDetails, ingredientDetail)
