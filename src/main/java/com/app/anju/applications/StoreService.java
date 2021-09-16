@@ -75,8 +75,12 @@ public class StoreService {
             )
         );
 
-    return stores.stream().map(store ->
-        new StoresDto(
+    return stores.stream()
+        .filter(store ->
+            mappedStoreIdAndFoodDetails.get(store.get_id()) != null
+        )
+        .map(store ->
+            new StoresDto(
             store,
             mappedStoreIdAndFoodDetails.get(store.get_id()).stream().map(FoodDetail::getFood)
                 .collect(Collectors.toList())
