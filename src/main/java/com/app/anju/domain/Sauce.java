@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Method {
+public class Sauce {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,8 @@ public class Method {
 
   private String name;
 
-  @OneToMany(mappedBy = "method", cascade = CascadeType.ALL)
-  private List<StoreMenu> storeMenus;
+  @OneToMany(mappedBy = "sauce", cascade = CascadeType.ALL)
+  private List<MenuSauce> menuSauce;
 
 }
+

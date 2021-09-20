@@ -1,29 +1,28 @@
 package com.app.anju.domain;
 
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Method {
+@Data
+public class MenuSauce {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String name;
+  @ManyToOne
+  private StoreMenu storeMenu;
 
-  @OneToMany(mappedBy = "method", cascade = CascadeType.ALL)
-  private List<StoreMenu> storeMenus;
+  @ManyToOne
+  private Sauce sauce;
 
 }
