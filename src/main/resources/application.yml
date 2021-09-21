@@ -16,3 +16,6 @@ spring:
 
 server:
   port: ${SERVER_PORT}
+
+kakao:
+  apiKey: ${KAKAO_APIKEY}
