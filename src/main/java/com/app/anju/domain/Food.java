@@ -3,8 +3,6 @@ package com.app.anju.domain;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,19 +25,7 @@ public class Food {
 
   private String name;
 
-  @Enumerated(value = EnumType.STRING)
-  private Base base;
-
-  @Enumerated(value = EnumType.STRING)
-  private Method method;
-
-  private String characteristic;
-
-  private Integer price;
-
   @OneToMany(mappedBy = "food", cascade = CascadeType.ALL)
-  private List<FoodDetail> foodDetails;
+  private List<StoreMenu> storeMenus;
 
-  @OneToMany(mappedBy = "food", cascade = CascadeType.ALL)
-  private List<IngredientDetail> ingredientDetails;
 }

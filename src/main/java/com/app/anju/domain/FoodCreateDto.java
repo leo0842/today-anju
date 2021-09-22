@@ -2,21 +2,25 @@ package com.app.anju.domain;
 
 import java.util.List;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 public class FoodCreateDto {
 
   private String name;
 
-  private Base base;
+  private List<Long> sauces;
 
-  private Method method;
+  private Long method;
 
   private String characteristic;
 
   private Integer price;
 
-  private List<Ingredient> ingredients;
+  private String store;
 
+  private Long food;
 
+  private List<Long> ingredients;
 }
