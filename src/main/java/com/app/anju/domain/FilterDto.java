@@ -16,9 +16,9 @@ public class FilterDto {
 
   private List<Double> geoBoundary;
 
-  private Base base;
+  private Long sauce;
 
-  private Method method;
+  private Long method;
 
   private Integer point;
 
