@@ -22,7 +22,7 @@ public class IngredientDetail {
   private Long id;
 
   @ManyToOne
-  private Food food;
+  private StoreMenu storeMenu;
 
   @ManyToOne
   private Ingredient ingredient;
