@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<!--<html lang="en">-->
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Thymeleaf Test</title>
+  <meta charset="UTF-8">
+</head>
+<body>
+
+<!--<p>음식 리스트</p>-->
+<!--<div>-->
+<!--  <tr th:each="food : ${foodList}">-->
+<!--    <td th:text="${food.id}">id</td>-->
+<!--    <td th:text="${food.name}">name</td>-->
+<!--  </tr>-->
+<!--</div>-->
+
+<!--<p>조리 방법 리스트</p>-->
+<!--<div>-->
+<!--  <tr th:each="method : ${methodList}">-->
+<!--    <td th:text="${method.id}">id</td>-->
+<!--    <td th:text="${method.name}">name</td>-->
+<!--  </tr>-->
+<!--</div>-->
+<p>메뉴 정보 입력</p>
+
+<form id="menu_form">
+  <p>
+    <label for="name">메뉴명: </label>
+    <input type="text" id="name" name="name">
+  </p>
+
+  <p>
+    <label for="food">음식 이름</label>
+    <input type="radio" id="food" name="food"
+           th:value="${food.id}" th:text="${food.name}" th:each="food : ${foodList}">
+  </p>
+
+  <p>
+    <label for="sauces">소스 선택</label>
+    <input type="checkbox" id="sauces" name="sauces"
+           th:value="${sauce.id}" th:text="${sauce.name}" th:each="sauce : ${sauceList}">
+  </p>
+
+  <p>
+    <label for="method">조리 방법</label>
+    <input type="radio" id="method" name="method"
+           th:value="${method.id}" th:text="${method.name}" th:each="method : ${methodList}">
+  </p>
+
+  <p>
+    <label for="store">가게 선택</label>
+    <input type="radio" id="store" name="store"
+           th:value="${store.id}" th:text="${store.name}" th:each="store : ${storeList}">
+  </p>
+
+  <p>
+    <label for="characteristic">특징: </label>
+    <input type="text" id="characteristic" name="characteristic">
+  </p>
+
+
+  <p>
+    <label for="price">가격: </label>
+    <input type="number" id="price" name="price">
+  </p>
+
+<!--  <div id="ingredient_box">-->
+<!--    <label for="ingredients">재료: </label>-->
+<!--    <input type="text" id="ingredients" name="ingredients">-->
+<!--    <input type="button" onclick="add_field()" value="+">-->
+<!--  </div>-->
+
+  <p>
+    <label for="ingredients">재료 선택</label>
+    <input type="checkbox" id="ingredients" name="ingredients"
+           th:value="${ingredient.id}" th:text="${ingredient.name}" th:each="ingredient : ${ingredientList}">
+  </p>
+
+</form>
+<p><button onclick="post()"> 클릭</button>
+</p>
+
+
+<p>
+  <button type="button" onclick="location.href='store' ">가게 추가</button>
+</p>
+<script th:inline="javascript">
+  function post() {
+
+    var formData = new FormData(document.getElementById('menu_form'));
+    const jsonData = Object.fromEntries(formData)
+
+    let food = JSON.stringify(jsonData);
+    let foodParse = JSON.parse(food);
+
+    var RawIngredients = document.getElementsByName('ingredients');
+
+    foodParse['ingredients'] = [];
+
+    for (var i = 0; i < RawIngredients.length; i++) {
+      var a = RawIngredients[i];
+
+      if (a.checked == true) {
+
+        foodParse['ingredients'].push(a.value);
+      }
+    }
+
+    //sauce
+    const RawSauces = document.getElementsByName('sauces');
+    foodParse['sauces'] = [];
+
+    for (let i = 0; i < RawSauces.length; i++) {
+
+      const a = RawSauces[i];
+      if (a.checked == true) {
+
+        foodParse['sauces'].push(a.value);
+      }
+    }
+
+
+    console.log(foodParse);
+    fetch("/food", {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(foodParse)
+    })
+    .then(data => console.log(data))
+    .catch(err => console.error(err))
+    // document.body.appendChild(newForm);
+    // newForm.submit();
+  }
+
+  // function add_field(){
+  //
+  //   var x = document.getElementById("ingredient_box");
+  //   // create an input field to insert
+  //   var new_field = document.createElement("input");
+  //   // set input field data type to text
+  //   new_field.setAttribute("type", "text");
+  //   // set input field name
+  //   new_field.setAttribute("name", "ingredients");
+  //   // select last position to insert element before it
+  //   var pos = x.childElementCount;
+  //
+  //   // insert element
+  //   x.insertBefore(new_field, x.childNodes[pos]);
+  // }
+</script>
+</body>
+</html>

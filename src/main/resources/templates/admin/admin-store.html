@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>가게 추가</title>
+</head>
+<body>
+<form id="menu_form">
+  <p>
+    <label for="name">상호명: </label>
+    <input type="text" id="name" name="name">
+  </p>
+
+    <p>
+      <label for="address">도로명 주소: </label>
+      <input type="text" id="address" name="address">
+      <a href="https://postcode.map.daum.net/guide"> 도로명 주소 찾으러 가기</a>
+    </p>
+
+  <p>
+    <label for="point">점수: </label>
+    <input type="number" id="point" name="point">
+  </p>
+
+  <p>
+    <label for="description">부가 설명: </label>
+    <input type="text" id="description" name="description">
+  </p>
+
+  <div>
+    <input type="radio" id="yes" name="visited" value="true"
+           checked>
+    <label for="yes">네</label>
+  </div>
+
+  <div>
+    <input type="radio" id="no" name="visited" value="false">
+    <label for="no">아니오</label>
+  </div>
+</form>
+
+<p>
+<button onclick="post()"> 클릭</button>
+</p>
+
+<p>
+  <button type="button" onclick="location.href='food' ">메뉴 추가</button>
+</p>
+
+<script th:inline="javascript">
+  function post() {
+
+    var formData = new FormData(document.getElementById('menu_form'));
+    const jsonData = Object.fromEntries(formData)
+
+    console.log(JSON.stringify(jsonData));
+    fetch("/store", {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(jsonData)
+    })
+    .then(data => console.log(data))
+    .catch(err => console.error(err))
+  }
+</script>
+</body>
+</html>
