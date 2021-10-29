@@ -1,13 +1,10 @@
 package com.app.anju.domain.querydsl;
 
-import com.app.anju.domain.Base;
 import com.app.anju.domain.FilterDto;
-import com.app.anju.domain.FoodDetail;
-import com.app.anju.domain.Method;
-import com.app.anju.domain.QFood;
-import com.app.anju.domain.QFoodDetail;
 import com.app.anju.domain.QIngredientDetail;
-import com.querydsl.core.types.Predicate;
+import com.app.anju.domain.QMenuSauce;
+import com.app.anju.domain.QStoreMenu;
+import com.app.anju.domain.StoreMenu;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -20,67 +17,66 @@ public class QueryFoodRepository {
 
   private final JPAQueryFactory query;
 
-  public List<FoodDetail> getFilteredFoodDetail(FilterDto filterDto, List<String> storeIds) {
+  public List<StoreMenu> getFilteredFoodDetail(FilterDto filterDto, List<String> storeIds) {
 
-    QFood food = QFood.food;
-    QFoodDetail foodDetail = QFoodDetail.foodDetail;
+    QStoreMenu storeMenu = QStoreMenu.storeMenu;
+    QMenuSauce menuSauce = QMenuSauce.menuSauce;
     QIngredientDetail ingredientDetail = QIngredientDetail.ingredientDetail;
-
     return query
-        .selectDistinct(foodDetail)
-        .from(foodDetail)
-        .leftJoin(foodDetail.food, food)
-        .leftJoin(food.ingredientDetails, ingredientDetail)
-        .where(eqStoreIds(foodDetail, storeIds))
-        .where(eqBase(food, filterDto.getBase()))
-        .where(eqMethod(food, filterDto.getMethod()))
-        .where(eqIngredient(ingredientDetail, filterDto.getIngredientName()))
-        .where(includeFoodName(food, filterDto.getFoodName()))
+        .selectDistinct(storeMenu)
+        .from(storeMenu)
+        .leftJoin(storeMenu.menuSauce, menuSauce)
+        .leftJoin(storeMenu.ingredientDetails, ingredientDetail)
+        .where(eqStoreIds(storeMenu, storeIds))
+        .where(eqSauce(menuSauce, filterDto.getSauce()))
+        .where(eqMethod(storeMenu, filterDto.getMethod()))
+        .where(includeIngredientName(ingredientDetail, filterDto.getIngredientName()))
+        .where(includeFoodName(storeMenu, filterDto.getFoodName()))
         .fetch();
   }
 
-  private BooleanExpression eqStoreIds(QFoodDetail foodDetail, List<String> storeIds) {
+  private BooleanExpression eqStoreIds(QStoreMenu storeMenu, List<String> storeIds) {
 
-    return foodDetail.storeId.in(storeIds);
+    return storeMenu.storeId.in(storeIds);
   }
 
-  private Predicate eqBase(QFood food, Base base) {
+  private BooleanExpression eqSauce(QMenuSauce menuSauce, Long sauceId) {
 
-    if (base == null) {
+    if (sauceId == null) {
 
       return null;
     }
 
-    return food.base.eq(base);
+    return menuSauce.sauce.id.eq(sauceId);
   }
 
-  private Predicate eqMethod(QFood food, Method method) {
+  private BooleanExpression eqMethod(QStoreMenu storeMenu, Long methodId) {
 
-    if (method == null) {
+    if (methodId == null) {
 
       return null;
     }
 
-    return food.method.eq(method);
+    return storeMenu.method.id.eq(methodId);
   }
 
-  private Predicate eqIngredient(QIngredientDetail ingredientDetail, String ingredientName) {
+  private BooleanExpression includeIngredientName(QIngredientDetail ingredientDetail, String ingredientName) {
 
     if (ingredientName == null) {
 
       return null;
     }
 
-    return ingredientDetail.ingredient.name.eq(ingredientName);
+    return ingredientDetail.ingredient.name.contains(ingredientName);
   }
 
-  private Predicate includeFoodName(QFood food, String foodName) {
+  private BooleanExpression includeFoodName(QStoreMenu storeMenu, String foodName) {
 
     if (foodName == null) {
 
       return null;
     }
 
-    return food.name.contains(foodName);
+    return storeMenu.food.name.contains(foodName);
   }
 }
