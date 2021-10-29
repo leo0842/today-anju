@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,37 +55,14 @@ public class StoreService {
 
     storeCreateDto.addLocation(getStoreCoordinates(storeCreateDto.getAddress()));
 
-    System.out.println("storeCreateDto = " + storeCreateDto);
-    Store store = mongoTemplate.insert(storeCreateDto.toStore());
+    mongoTemplate.insert(storeCreateDto.toStore());
   }
 
   public List<StoreResponseDto> getStores(FilterDto filterDto) {
 
-    List<Store> stores;
+    List<Store> stores = findStoresByConditionFromMongoDB(filterDto);
 
-    if (filterDto.getGeoBoundary() == null) {
-
-      stores = mongoTemplate.findAll(Store.class);
-    } else {
-
-      Point leftBottom = new Point(filterDto.getGeoBoundary().get(0), filterDto.getGeoBoundary().get(1));
-      Point rightTop = new Point(filterDto.getGeoBoundary().get(2), filterDto.getGeoBoundary().get(3));
-      Box box = new Box(leftBottom, rightTop);
-
-      Query condition = new Query(Criteria.where("location").within(box));
-
-      if (filterDto.getPoint() != null) {
-        condition.addCriteria(Criteria.where("point").gte(filterDto.getPoint()));
-      }
-
-      if (filterDto.getVisited() != null) {
-        condition.addCriteria(Criteria.where("visited").is(filterDto.getVisited()));
-      }
-
-      stores = mongoTemplate.find(condition, Store.class);
-    }
-
-    List<String> storeIds = stores.stream().map(Store::get_id).collect(Collectors.toList());
+    List<String> storeIds = extractStoreIds(stores);
     List<StoreMenu> filteredStoreMenu = queryFoodRepository.getFilteredFoodDetail(filterDto, storeIds);
 
     if (filteredStoreMenu.isEmpty()) {
@@ -91,7 +70,29 @@ public class StoreService {
       return Collections.emptyList();
     }
 
-    HashMap<String, ArrayList<StoreMenu>> mappedStoreIdAndFoodDetails = filteredStoreMenu.stream()
+    HashMap<String, ArrayList<StoreMenu>> mappedStoreIdAndFoodDetails = mapStoreIdsWithMenus(filteredStoreMenu);
+
+    return stores.stream()
+        .filter(filterNullStoreIdsFromArea(mappedStoreIdAndFoodDetails)
+        )
+        .map(buildStoreResponseDto(mappedStoreIdAndFoodDetails)
+        )
+        .collect(Collectors.toList());
+  }
+
+  private List<Store> findStoresByConditionFromMongoDB(FilterDto filterDto) {
+    Box box = buildRectangularArea(filterDto.getGeoBoundary());
+    Query condition = buildCondition(filterDto, box);
+
+    return mongoTemplate.find(condition, Store.class);
+  }
+
+  private List<String> extractStoreIds(List<Store> stores) {
+    return stores.stream().map(Store::get_id).collect(Collectors.toList());
+  }
+
+  private HashMap<String, ArrayList<StoreMenu>> mapStoreIdsWithMenus(List<StoreMenu> filteredStoreMenu) {
+    return filteredStoreMenu.stream()
         .collect(
             Collectors.groupingBy(
                 StoreMenu::getStoreId,
@@ -99,18 +100,38 @@ public class StoreService {
                 Collectors.toCollection(ArrayList::new)
             )
         );
+  }
 
-    return stores.stream()
-        .filter(store ->
-            mappedStoreIdAndFoodDetails.get(store.get_id()) != null
-        )
-        .map(store ->
-            new StoreResponseDto(
-                store,
-                mappedStoreIdAndFoodDetails.get(store.get_id())
-            )
-        )
-        .collect(Collectors.toList());
+  private Predicate<Store> filterNullStoreIdsFromArea(HashMap<String, ArrayList<StoreMenu>> mappedStoreIdAndFoodDetails) {
+    return store ->
+        mappedStoreIdAndFoodDetails.get(store.get_id()) != null;
+  }
+
+  private Function<Store, StoreResponseDto> buildStoreResponseDto(HashMap<String, ArrayList<StoreMenu>> mappedStoreIdAndFoodDetails) {
+    return store ->
+        new StoreResponseDto(
+            store,
+            mappedStoreIdAndFoodDetails.get(store.get_id())
+        );
+  }
+
+  private Box buildRectangularArea(List<Double> getBoundary) {
+    Point leftBottom = new Point(getBoundary.get(0), getBoundary.get(1));
+    Point rightTop = new Point(getBoundary.get(2), getBoundary.get(3));
+    return new Box(leftBottom, rightTop);
+  }
+
+  private Query buildCondition(FilterDto filterDto, Box box) {
+    Query condition = new Query(Criteria.where("location").within(box));
+
+    if (filterDto.getPoint() != null) {
+      condition.addCriteria(Criteria.where("point").gte(filterDto.getPoint()));
+    }
+
+    if (filterDto.getVisited() != null) {
+      condition.addCriteria(Criteria.where("visited").is(filterDto.getVisited()));
+    }
+    return condition;
   }
 
   public List<StoreKeyValueDto> getStoreValue() {
